@@ -1,0 +1,4 @@
+SetEnvIf Referer "^https://aikelab\.net/primelens" valid_referer
+order deny,allow
+deny from all
+allow from env=valid_referer
