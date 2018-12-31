@@ -78,25 +78,22 @@ class App extends Component {
     const arr_annotations = json.responses[0].textAnnotations;
     const tel_numbers = [];
     arr_annotations.forEach((item) => {
-      // 高速化のために短すぎる文字列はここで無視する
-//      if (item.description.length >= 10) {
-        const str = item.description;
-        // 電話番号や車のナンバープレートを考慮して
-        // 数字、ハイフン、カッコの連続を数字列とみなす
-        const match_str = str.match(/[\d\-()]+/g);
-        // 電話番号が存在するか
-        if (match_str !== null) {
-          // 電話番号が複数存在する場合を考慮してループ
-          match_str.forEach((item) => {
-            // ハイフン、カッコを削除して数字のみを得る
-            const num = item.replace(/[-()]/g, '');
-            // 数字のみで1桁以上のものを数値として配列にする
-            if (num.length > 0) {
-              tel_numbers.push({str:item, num:num});
-            }
-          });
-        }
-//      }
+      const str = item.description;
+      // 電話番号、ナンバープレート、時計などを考慮して
+      // 数字、ハイフン、カッコ、コロン、カンマの連続を数字列とみなす
+      const match_str = str.match(/[\d\-():,]+/g);
+      // 電話番号が存在するか
+      if (match_str !== null) {
+        // 電話番号が複数存在する場合を考慮してループ
+        match_str.forEach((item) => {
+          // ハイフン、カッコを削除して数字のみを得る
+          const num = item.replace(/[-():,]/g, '');
+          // 数字のみで1桁以上のものを数値として配列にする
+          if (num.length > 0) {
+            tel_numbers.push({str:item, num:num});
+          }
+        });
+      }
     });
 
     this.showResult(tel_numbers);
